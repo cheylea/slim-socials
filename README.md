@@ -17,3 +17,9 @@ TELEGRAM_CHAT_ID = 7829996114
 For the email password, gmail doesn't support using your straight password, so you will need to make sure 2 factor authentication is on and create an app password. Use the Google guidance [here](https://support.google.com/accounts/answer/185833?hl=en).
 
 Make sure the Telegram Chat ID doesn't have '' around it.
+
+# Deploying to Railway
+
+When deploying ensure requirements.txt is up to date, and add your environment variables manually to the variables tab. 
+
+![Railway Variables Screenshot](image.png)
