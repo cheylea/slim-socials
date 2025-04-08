@@ -13,8 +13,8 @@ EMAIL = os.getenv('EMAIL_USER')
 APP_PASSWORD = os.getenv('EMAIL_PASS')
 
 IMAP_SERVER = 'imap.gmail.com'
-SEARCH_KEYWORDS = ['Instagram', 'Facebook', 'LinkedIn', 'New message']
-SEARCH_SENDERS = ['@linkedin.com', '@facebookmail.com', '@mail.instagram.com']
+SEARCH_KEYWORDS = ['Instagram', 'Facebook', 'LinkedIn', 'New message', 'Delivery cancelled', 'Vinted', 'Amazon']
+SEARCH_SENDERS = ['@linkedin.com', '@facebookmail.com', '@mail.instagram.com', '@vinted.co.uk', 'shipment-tracking@amazon.co.uk', 'order-update@amazon.co.uk']
 
 def clean_subject(subject):
     decoded = decode_header(subject)
@@ -47,7 +47,7 @@ def check_email():
             return
 
         for num in messages[0].split():
-            status, data = mail.fetch(num, '(RFC822)')
+            status, data = mail.fetch(num, "(BODY.PEEK[])")
             if status != 'OK':
                 continue
 
@@ -69,36 +69,67 @@ def check_email():
                 
                 
                 # Send Telegram message
-                if 'Facebook' in subject or 'Facebook' in body:
-                    print("yup!")
+                if 'Facebook' in subject or '@facebookmail.com' in sender:
                     subject = subject.replace("Facebook", "📘 Facebook")
-                    print(subject)
-                elif 'Instagram' in subject or 'Instagram' in body:
+                elif 'Instagram' in subject or '@mail.instagram.com' in sender:
                     subject = subject.replace("Instagram", "🎞️ Instagram")
-                elif 'LinkedIn' in subject or 'LinkedIn' in body:
+                elif 'LinkedIn' in subject or '@linkedin.com' in sender:
                     subject = subject.replace("LinkedIn", "💼 LinkedIn")
+                elif 'Vinted' in subject or '@vinted.co.uk' in sender:
+                    subject = subject.replace("Vinted", "👗 Vinted")
+                elif 'Amazon' in subject or '@amazon.co.uk' in sender:
+                    subject = subject.replace("Amazon", "📦 Amazon")
                 else:
                     subject = subject.replace("New message", "📩 New message")
                 
-                if 'Facebook' not in subject and 'Facebook' in body:
-                    print("yup!")
+                if 'Facebook' not in subject and '@facebookmail.com' in sender:
                     subject = "📘 Facebook: " + subject
-                    print(subject)
-                elif 'Instagram' not in subject and 'Instagram' in body:
+                elif 'Instagram' not in subject and '@mail.instagram.com' in sender:
                     subject = "🎞️ Instagram: " + subject
-                elif 'LinkedIn' not in subject and 'LinkedIn' in body:
+                elif 'LinkedIn' not in subject and '@linkedin.com' in sender:
                     subject = "💼 LinkedIn: " + subject
+                elif 'Vinted' not in subject and '@vinted.co.uk' in sender:
+                    subject = "👗 Vinted: " + subject
+                elif 'Amazon' not in subject and '@amazon.co.uk' in sender:
+                    subject = "📦 Amazon: " + subject
                 
                 if 'Facebook' in subject:
                     start = 'Hi Cheylea,'
                     end = 'This message was sent to cheyleahopkinson@gmail.com.'
                     preview = get_text_between_chars(body, start, end)
-                    print(preview)
+                elif 'Vinted' in subject or '@vinted.co.uk' in sender:
+                    preview = ''
+                elif 'shipment-tracking@amazon.co.uk' in sender:
+                    start = 'Track package'
+                    end = 'Quantity:'
+                    preview = get_text_between_chars(body, start, end)
                 else:
                     preview = body.strip().replace('\r', '').replace('\n', ' ')[:1000]
                 send_telegram_message(f"{subject}\n\n{preview}...")
+
+                mail.store(num, '+FLAGS', '\\Seen')
         print("...checking complete")
         mail.logout()
 
     except Exception as e:
         print(f"[ERROR] {e}")
+
+def count_unread_emails():
+    try:
+        # Connect to the email server
+        imap = imaplib.IMAP4_SSL("imap.gmail.com")
+        imap.login(os.getenv("EMAIL_USER"), os.getenv("EMAIL_PASS"))
+
+        # Select the mailbox you want to check
+        imap.select("inbox")
+
+        # Search for unread emails
+        status, messages = imap.search(None, 'UNSEEN')
+        unread_count = len(messages[0].split())
+
+        # Send result to Telegram
+        send_telegram_message(f"📬 You have {unread_count} unread emails.")
+
+        imap.logout()
+    except Exception as e:
+        send_telegram_message(f"[ERROR] Failed to check unread email count: {str(e)}")
