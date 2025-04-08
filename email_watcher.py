@@ -67,7 +67,6 @@ def check_email():
                     charset = msg.get_content_charset() or 'utf-8'
                     body = msg.get_payload(decode=True).decode(charset, errors='ignore')
                 
-                
                 # Send Telegram message
                 if 'Facebook' in subject or '@facebookmail.com' in sender:
                     subject = subject.replace("Facebook", "📘 Facebook")
@@ -79,8 +78,7 @@ def check_email():
                     subject = subject.replace("Vinted", "👗 Vinted")
                 elif 'Amazon' in subject or '@amazon.co.uk' in sender:
                     subject = subject.replace("Amazon", "📦 Amazon")
-                else:
-                    subject = subject.replace("New message", "📩 New message")
+                
                 
                 if 'Facebook' not in subject and '@facebookmail.com' in sender:
                     subject = "📘 Facebook: " + subject
@@ -92,13 +90,31 @@ def check_email():
                     subject = "👗 Vinted: " + subject
                 elif 'Amazon' not in subject and '@amazon.co.uk' in sender:
                     subject = "📦 Amazon: " + subject
+                else:
+                    subject = "📩" + subject
                 
                 if 'Facebook' in subject:
                     start = 'Hi Cheylea,'
                     end = 'This message was sent to cheyleahopkinson@gmail.com.'
                     preview = get_text_between_chars(body, start, end)
                 elif 'Vinted' in subject or '@vinted.co.uk' in sender:
-                    preview = ''
+                    if 'New offer' in subject:
+                        start1 = 'New offer:</p>'
+                        start2 = '£'
+                        end1 = '</div>'
+                        end2 = '<br /><br />'
+                        preview = get_text_between_chars(body, start1, end1)
+                        print(preview)
+                        preview = '£' + get_text_between_chars(preview, start2, end2)
+                        print(preview)
+                    elif 'New message' in subject:
+                        start1 = 'New message:</p>'
+                        start2 = '<p>'
+                        end = '</p>'
+                        preview = get_text_between_chars(body, start1, end)
+                        print(preview)
+                        preview = get_text_between_chars(body, start2, end)
+                        print(preview)
                 elif 'shipment-tracking@amazon.co.uk' in sender:
                     start = 'Track package'
                     end = 'Quantity:'
