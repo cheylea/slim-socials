@@ -57,6 +57,7 @@ def check_email():
 
             if any(keyword in subject for keyword in SEARCH_KEYWORDS) or any(keyword in sender for keyword in SEARCH_SENDERS):
                 body = ""
+                preview = ""
                 if msg.is_multipart():
                     for part in msg.walk():
                         if part.get_content_type() == "text/plain":
@@ -104,23 +105,22 @@ def check_email():
                         end1 = '</div>'
                         end2 = '<br /><br />'
                         preview = get_text_between_chars(body, start1, end1)
-                        print(preview)
                         preview = '£' + get_text_between_chars(preview, start2, end2)
-                        print(preview)
-                    elif 'New message' in subject:
+                    elif 'Order update' or 'New message' in subject:
                         start1 = 'New message:</p>'
                         start2 = '<p>'
                         end = '</p>'
                         preview = get_text_between_chars(body, start1, end)
-                        print(preview)
                         preview = get_text_between_chars(body, start2, end)
-                        print(preview)
                 elif 'shipment-tracking@amazon.co.uk' in sender:
                     start = 'Track package'
                     end = 'Quantity:'
                     preview = get_text_between_chars(body, start, end)
+                elif 'order-update@amazon.co.uk' in sender:
+                    preview = ""
                 else:
                     preview = body.strip().replace('\r', '').replace('\n', ' ')[:1000]
+                
                 send_telegram_message(f"{subject}\n\n{preview}...")
 
                 mail.store(num, '+FLAGS', '\\Seen')
