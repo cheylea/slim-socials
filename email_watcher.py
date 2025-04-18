@@ -13,7 +13,7 @@ EMAIL = os.getenv('EMAIL_USER')
 APP_PASSWORD = os.getenv('EMAIL_PASS')
 
 IMAP_SERVER = 'imap.gmail.com'
-SEARCH_KEYWORDS = ['Instagram', 'Facebook', 'LinkedIn', 'New message', 'Delivery cancelled', 'Vinted', 'Amazon']
+SEARCH_KEYWORDS = ['Instagram', 'Facebook', 'LinkedIn', 'New message', 'Delivery cancelled', 'Vinted', 'Amazon', 'Only 24 hours to grab your parcel', 'Your parcel is ready to collect']
 SEARCH_SENDERS = ['@linkedin.com', '@facebookmail.com', '@mail.instagram.com', '@vinted.co.uk', 'shipment-tracking@amazon.co.uk', 'order-update@amazon.co.uk']
 
 def clean_subject(subject):
@@ -68,6 +68,7 @@ def check_email():
                     charset = msg.get_content_charset() or 'utf-8'
                     body = msg.get_payload(decode=True).decode(charset, errors='ignore')
                 
+
                 # Send Telegram message
                 if 'Facebook' in subject or '@facebookmail.com' in sender:
                     subject = subject.replace("Facebook", "📘 Facebook")
@@ -149,3 +150,33 @@ def count_unread_emails():
         imap.logout()
     except Exception as e:
         send_telegram_message(f"[ERROR] Failed to check unread email count: {str(e)}")
+
+def check_promotions():
+    try:
+        print("Checking for promotional emails (Gmail category)...")
+        mail = imaplib.IMAP4_SSL(IMAP_SERVER)
+        mail.login(EMAIL, APP_PASSWORD)
+        mail.select("inbox")
+
+        # Gmail's smart category filter
+        status, messages = mail.search(None, 'X-GM-RAW "category:promotions is:unread"')
+        if status != 'OK':
+            return
+
+        for num in messages[0].split():
+            status, data = mail.fetch(num, "(BODY.PEEK[])")
+            if status != 'OK':
+                continue
+
+            msg = email.message_from_bytes(data[0][1])
+            subject = clean_subject(msg['Subject'])
+            sender = msg['From']
+
+            print(f"[PROMO] Marking as read: {subject} from {sender}")
+            mail.store(num, '+FLAGS', '\\Seen')  # ✅ Mark as read
+
+        print("...promo check complete")
+        mail.logout()
+
+    except Exception as e:
+        print(f"[ERROR] check_promotions failed: {e}")
