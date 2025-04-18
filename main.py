@@ -17,7 +17,6 @@ def email_promotion_loop():
 
 def scheduler_loop():
     schedule.every().day.at("08:00").do(count_unread_emails)
-    schedule.every().day.at("15:00").do(count_unread_emails)
     schedule.every().day.at("20:00").do(count_unread_emails)
 
     while True:
