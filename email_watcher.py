@@ -92,6 +92,8 @@ def check_email():
                     subject = "👗 Vinted: " + subject
                 elif 'Amazon' not in subject and '@amazon.co.uk' in sender:
                     subject = "📦 Amazon: " + subject
+                elif '@inpost.co.uk' in sender:
+                    subject = "🟡 InPost: " + subject
                 else:
                     subject = "📩" + subject
                 
