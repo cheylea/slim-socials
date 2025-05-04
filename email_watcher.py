@@ -13,8 +13,8 @@ EMAIL = os.getenv('EMAIL_USER')
 APP_PASSWORD = os.getenv('EMAIL_PASS')
 
 IMAP_SERVER = 'imap.gmail.com'
-SEARCH_KEYWORDS = ['Instagram', 'Facebook', 'LinkedIn', 'New message', 'Delivery cancelled', 'Vinted', 'Amazon', 'Only 24 hours to grab your parcel', 'Your parcel is ready to collect']
-SEARCH_SENDERS = ['@linkedin.com', '@facebookmail.com', '@mail.instagram.com', '@vinted.co.uk', 'shipment-tracking@amazon.co.uk', 'order-update@amazon.co.uk']
+SEARCH_KEYWORDS = ['Facebook', 'LinkedIn', 'New message', 'Delivery cancelled', 'Vinted', 'Amazon', 'Only 24 hours to grab your parcel', 'Your parcel is ready to collect']
+SEARCH_SENDERS = ['@linkedin.com', '@facebookmail.com', '@vinted.co.uk', 'shipment-tracking@amazon.co.uk', 'order-update@amazon.co.uk']
 
 def clean_subject(subject):
     decoded = decode_header(subject)
@@ -72,8 +72,6 @@ def check_email():
                 # Send Telegram message
                 if 'Facebook' in subject or '@facebookmail.com' in sender:
                     subject = subject.replace("Facebook", "📘 Facebook")
-                elif 'Instagram' in subject or '@mail.instagram.com' in sender:
-                    subject = subject.replace("Instagram", "🎞️ Instagram")
                 elif 'LinkedIn' in subject or '@linkedin.com' in sender:
                     subject = subject.replace("LinkedIn", "💼 LinkedIn")
                 elif 'Vinted' in subject or '@vinted.co.uk' in sender:
@@ -84,8 +82,6 @@ def check_email():
                 
                 if 'Facebook' not in subject and '@facebookmail.com' in sender:
                     subject = "📘 Facebook: " + subject
-                elif 'Instagram' not in subject and '@mail.instagram.com' in sender:
-                    subject = "🎞️ Instagram: " + subject
                 elif 'LinkedIn' not in subject and '@linkedin.com' in sender:
                     subject = "💼 LinkedIn: " + subject
                 elif 'Vinted' not in subject and '@vinted.co.uk' in sender:
@@ -147,7 +143,7 @@ def count_unread_emails():
         unread_count = len(messages[0].split())
 
         # Send result to Telegram
-        send_telegram_message(f"📬 You have {unread_count} unread emails.")
+        send_telegram_message(f"📬 You have {unread_count} unread emails. See here: https://mail.google.com/mail/u/0/#inbox")
 
         imap.logout()
     except Exception as e:
