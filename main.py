@@ -1,6 +1,7 @@
 # main.py
 from discord_watcher import run_discord_bot
 from email_watcher import check_email, count_unread_emails, check_promotions
+from telegram_notifier import send_telegram_message
 import threading
 import time
 import schedule
@@ -18,6 +19,7 @@ def email_promotion_loop():
 def scheduler_loop():
     schedule.every().day.at("08:00").do(count_unread_emails)
     schedule.every().day.at("20:00").do(count_unread_emails)
+    schedule.every().day.at("23:00").do(send_telegram_message("Have you done your Ahead 🧠 and Puzzles 🧩 today?"))
 
     while True:
         schedule.run_pending()
