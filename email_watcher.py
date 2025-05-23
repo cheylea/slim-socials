@@ -14,7 +14,7 @@ APP_PASSWORD = os.getenv('EMAIL_PASS')
 
 IMAP_SERVER = 'imap.gmail.com'
 SEARCH_KEYWORDS = ['Duolingo', 'Facebook', 'LinkedIn', 'New message', 'Delivery cancelled', 'Vinted', 'Amazon', 'Only 24 hours to grab your parcel', 'Your parcel is ready to collect']
-SEARCH_SENDERS = ['@duolingo.com', '@linkedin.com', '@facebookmail.com', '@vinted.co.uk', 'shipment-tracking@amazon.co.uk', 'order-update@amazon.co.uk']
+SEARCH_SENDERS = ['@duolingo.com', '@linkedin.com', '@facebookmail.com', '@vinted.co.uk', 'shipment-tracking@amazon.co.uk', 'order-update@amazon.co.uk', 'jobarnard.writes@gmail.com']
 
 def clean_subject(subject):
     decoded = decode_header(subject)
