@@ -17,9 +17,9 @@ def email_promotion_loop():
         time.sleep(60)  # Check every 60 seconds
 
 def scheduler_loop():
-    schedule.every().day.at("08:00").do(count_unread_emails())
-    schedule.every().day.at("20:00").do(count_unread_emails())
-    schedule.every().day.at("23:00").do(send_telegram_message("Have you done your Ahead 🧠 and Puzzles 🧩 today?"))
+    schedule.every().day.at("08:00").do(count_unread_emails)
+    schedule.every().day.at("20:00").do(count_unread_emails)
+    schedule.every().day.at("23:00").do(lambda: send_telegram_message("Have you done your Ahead 🧠 and Puzzles 🧩 today?"))
 
     while True:
         schedule.run_pending()
