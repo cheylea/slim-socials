@@ -13,8 +13,8 @@ EMAIL = os.getenv('EMAIL_USER')
 APP_PASSWORD = os.getenv('EMAIL_PASS')
 
 IMAP_SERVER = 'imap.gmail.com'
-SEARCH_KEYWORDS = ['Duolingo', 'Facebook', 'LinkedIn', 'New message', 'Delivery cancelled', 'Vinted', 'Amazon', 'Only 24 hours to grab your parcel', 'Your parcel is ready to collect']
-SEARCH_SENDERS = ['@duolingo.com', '@linkedin.com', '@facebookmail.com', '@vinted.co.uk', 'shipment-tracking@amazon.co.uk', 'order-update@amazon.co.uk', 'jobarnard.writes@gmail.com']
+SEARCH_KEYWORDS = ['Facebook', 'LinkedIn', 'New message', 'Delivery cancelled', 'Vinted', 'Amazon', 'Only 24 hours to grab your parcel', 'Your parcel is ready to collect']
+SEARCH_SENDERS = ['@linkedin.com', '@facebookmail.com', '@vinted.co.uk', 'shipment-tracking@amazon.co.uk', 'order-update@amazon.co.uk', 'jobarnard.writes@gmail.com']
 
 def clean_subject(subject):
     decoded = decode_header(subject)
@@ -72,8 +72,6 @@ def check_email():
                 # Send Telegram message
                 if 'Facebook' in subject or '@facebookmail.com' in sender:
                     subject = subject.replace("Facebook", "📘 Facebook")
-                elif 'Duolingo' in subject or '@duolingo.com' in sender:
-                    subject = subject.replace("Duolingo", "🦉 Duolingo")
                 elif 'LinkedIn' in subject or '@linkedin.com' in sender:
                     subject = subject.replace("LinkedIn", "💼 LinkedIn")
                 elif 'Vinted' in subject or '@vinted.co.uk' in sender:
@@ -86,8 +84,6 @@ def check_email():
                     subject = "📘 Facebook: " + subject
                 elif 'LinkedIn' not in subject and '@linkedin.com' in sender:
                     subject = "💼 LinkedIn: " + subject
-                elif 'Duolingo' not in subject and '@duolingo.com' in sender:
-                    subject = "🦉 Duolingo " + subject
                 elif 'Vinted' not in subject and '@vinted.co.uk' in sender:
                     subject = "👗 Vinted: " + subject
                 elif 'Amazon' not in subject and '@amazon.co.uk' in sender:
