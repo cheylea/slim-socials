@@ -143,7 +143,7 @@ def count_unread_emails():
         unread_count = len(messages[0].split())
 
         # Send result to Telegram
-        send_telegram_message(f'📬 You have {unread_count} unread emails: <a href="googlegmail://">open gmail</a>', parse_mode="HTML")
+        send_telegram_message(f"📬 You have {unread_count} unread emails. See here: https://mail.google.com/mail/u/0/#inbox")
 
         imap.logout()
     except Exception as e:
