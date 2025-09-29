@@ -11,8 +11,8 @@ EMAIL_USER=youremail@gmail.com
 EMAIL_PASS=yourapppassword 
 DISCORD_BOT_TOKEN = 'your bot token'
 TARGET_CHANNEL_IDS = ['channelid1', 'channelid2', 'channelid3' etc]
-TELEGRAM_BOT_TOKEN = '8114419754:AAE0J0W9X7FA19zkCfQDwVKIGsACntwposg'
-TELEGRAM_CHAT_ID = 7829996114
+TELEGRAM_BOT_TOKEN = 'yourtoken'
+TELEGRAM_CHAT_ID = yourchatid
 ```
 For the email password, gmail doesn't support using your straight password, so you will need to make sure 2 factor authentication is on and create an app password. Use the Google guidance [here](https://support.google.com/accounts/answer/185833?hl=en).
 
