@@ -7,29 +7,28 @@ import os
 
 # Get tokens and ids from .env file
 load_dotenv()  # loads
-DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-TARGET_CHANNEL_IDS = os.getenv('TARGET_CHANNEL_IDS')
+BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+USER_ID = os.getenv('USER_ID')
 
 # Discord Watcher
-intents = discord.Intents.default()
-intents.message_content = True
 
-client = discord.Client(intents=intents)
+class MyDiscordBot(discord.Client):
+    async def on_ready(self):
+        print(f"✅ Logged in as {self.user}")
 
-@client.event
-async def on_ready():
-    print(f'[Discord] Logged in as {client.user}')
+    async def on_message(self, message):
+        # Prevent self-replies
+        if message.author == self.user:
+            return
 
-@client.event
-async def on_message(message):
-    if str(message.channel.id) in TARGET_CHANNEL_IDS and not message.author.bot:
-        alert = f"DISCORD 🎮 [{message.guild.name} > #{message.channel.name}] {message.author.name}: {message.content}"
-
-        if alert:
-            send_telegram_message(alert)
-        else:
-            alert = f"[{message.guild.name} > #{message.channel.name}] {message.author.name}: Content blank"
-            send_telegram_message(alert)
+        # Example: respond when you message the bot
+        if message.content.lower().startswith("ping"):
+            await message.channel.send("Pong!")
+        elif message.content.lower().startswith("status"):
+            await message.channel.send("📬 Watching your inbox...")
 
 def run_discord_bot():
-    client.run(DISCORD_BOT_TOKEN)
+    intents = discord.Intents.default()
+    intents.messages = True
+    bot = MyDiscordBot(intents=intents)
+    bot.run(BOT_TOKEN)
