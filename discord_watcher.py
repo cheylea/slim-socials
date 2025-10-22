@@ -1,6 +1,5 @@
 # discord_watcher.py
 import discord
-from telegram_notifier import send_telegram_message
 
 from dotenv import load_dotenv
 import os
