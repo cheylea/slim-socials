@@ -2,7 +2,7 @@
 import imaplib
 import email
 from email.header import decode_header
-from telegram_notifier import send_telegram_message
+from discord_notifier import send_discord_message
 
 from dotenv import load_dotenv
 import os
@@ -120,7 +120,7 @@ def check_email():
                 else:
                     preview = body.strip().replace('\r', '').replace('\n', ' ')[:1000]
                 
-                send_telegram_message(f"{subject}\n\n{preview}...")
+                send_discord_message(f"{subject}\n\n{preview}...")
 
                 mail.store(num, '+FLAGS', '\\Seen')
         print("...checking complete")
@@ -143,11 +143,11 @@ def count_unread_emails():
         unread_count = len(messages[0].split())
 
         # Send result to Telegram
-        send_telegram_message(f"📬 You have {unread_count} unread emails. See here: https://mail.google.com/mail/u/0/#inbox")
+        send_discord_message(f"📬 You have {unread_count} unread emails. See here: https://mail.google.com/mail/u/0/#inbox")
 
         imap.logout()
     except Exception as e:
-        send_telegram_message(f"[ERROR] Failed to check unread email count: {str(e)}")
+        send_discord_message(f"[ERROR] Failed to check unread email count: {str(e)}")
 
 def check_promotions():
     try:
